@@ -1,1 +1,1 @@
-# -little-lights
+# little-lights
