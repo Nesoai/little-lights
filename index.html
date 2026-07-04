@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Little Lights — a Boundless learning garden</title>
+<meta name="description" content="Little Lights: a magical tap-and-learn garden for ages 2–6. Colors, rainbow body lights, plants, energy rivers, and space — all narrated out loud.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#2b2260">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%232b2260'/><text x='50' y='68' font-size='52' text-anchor='middle'>✨</text></svg>">
+<style>
+:root{
+  --night:#2b2260;        /* deep dusk sky */
+  --night-deep:#1d1747;
+  --moonmilk:#fff7e8;     /* warm cream text/cards */
+  --sun:#ffc84a;          /* gold */
+  --sprout:#59c98a;       /* green */
+  --berry:#ff7bac;        /* pink */
+  --sky:#59a8ff;          /* blue */
+  --violet:#a06bff;       /* purple */
+  --flame:#ff7b5c;        /* orange-red */
+  --ink:#3a2e6e;
+  --radius:28px;
+  --shadow:0 10px 0 rgba(0,0,0,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Fredoka',sans-serif;
+  font-size:20px;
+  color:var(--moonmilk);
+  background:linear-gradient(180deg,#1d1747 0%,#2b2260 34%,#4a3a8f 68%,#7c5bb8 100%);
+  overflow:hidden;
+  position:fixed; inset:0;
+  touch-action:manipulation;
+  user-select:none;-webkit-user-select:none;
+}
+h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
+
+/* ---------- ambient sky ---------- */
+#sky{position:fixed;inset:0;pointer-events:none;z-index:0}
+.tw{position:absolute;border-radius:50%;background:#fff;opacity:.8;animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:.9;transform:scale(1.15)}}
+#hill{position:fixed;left:-10%;right:-10%;bottom:-6vh;height:26vh;background:radial-gradient(120% 100% at 50% 0,#3f8f68 0,#2f6d50 60%,#25573f 100%);border-radius:50% 50% 0 0;z-index:0;pointer-events:none}
+#hill:after{content:"🌷 🌼 🌱 🌸 🍄 🌻 🌿 🌺";position:absolute;top:14px;left:0;right:0;text-align:center;font-size:clamp(18px,4vw,30px);letter-spacing:2vw;filter:saturate(1.2)}
+.firefly{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--sun);box-shadow:0 0 12px 4px rgba(255,200,74,.55);animation:drift 9s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}25%{transform:translate(26px,-34px)}50%{transform:translate(-18px,-58px)}75%{transform:translate(20px,-22px)}}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;z-index:2;display:none;flex-direction:column;align-items:center;padding:max(14px,env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.on{display:flex;animation:pop-in .35s ease}
+@keyframes pop-in{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+
+/* ---------- top bar ---------- */
+.topbar{width:100%;max-width:760px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.chip{background:rgba(255,247,232,.14);border:2px solid rgba(255,247,232,.35);border-radius:999px;padding:8px 14px;font-weight:600;font-size:17px;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px)}
+.iconbtn{border:none;cursor:pointer;background:var(--moonmilk);color:var(--ink);width:56px;height:56px;min-width:56px;border-radius:20px;font-size:26px;box-shadow:var(--shadow);display:grid;place-items:center;transition:transform .12s}
+.iconbtn:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.spacer{flex:1}
+#starChip{background:linear-gradient(135deg,#ffdf8e,#ffc84a);color:#5c3d00;border-color:#fff2c4;font-family:'Baloo 2';font-size:19px}
+
+/* ---------- big friendly buttons ---------- */
+.big-btn{
+  border:none;cursor:pointer;font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:clamp(22px,5.5vw,30px);color:#fff;padding:20px 34px;border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--sprout),#3fae72);
+  box-shadow:var(--shadow), inset 0 3px 0 rgba(255,255,255,.35);
+  transition:transform .12s; letter-spacing:.5px; min-height:72px;
+}
+.big-btn:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.big-btn.gold{background:linear-gradient(180deg,#ffd76b,#f5a623);color:#5c3d00}
+.big-btn.berry{background:linear-gradient(180deg,#ff9cc0,#f05a92)}
+.big-btn.ghost{background:rgba(255,247,232,.14);border:3px dashed rgba(255,247,232,.5);box-shadow:none;color:var(--moonmilk)}
+
+/* ---------- splash ---------- */
+#scr-splash{justify-content:center;text-align:center;gap:10px}
+#scr-splash h1{font-size:clamp(44px,11vw,84px);line-height:1.02;
+  background:linear-gradient(90deg,#ff8a8a,#ffc84a,#7ee2a8,#7fc2ff,#c9a1ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.25));}
+#scr-splash .sub{font-size:clamp(18px,4.5vw,24px);opacity:.9;max-width:26ch;margin:0 auto}
+.splash-kid{width:min(46vw,220px);margin:6px auto -4px;animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ---------- profiles ---------- */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;width:100%;max-width:640px;margin:10px 0 16px}
+.pcard{background:var(--moonmilk);color:var(--ink);border-radius:26px;padding:16px 8px 12px;text-align:center;cursor:pointer;border:5px solid transparent;box-shadow:var(--shadow);transition:transform .12s}
+.pcard:active{transform:scale(.96)}
+.pcard .face{font-size:56px;line-height:1}
+.pcard .pname{font-family:'Baloo 2';font-weight:800;font-size:20px;margin-top:6px}
+.pcard .pstars{font-size:15px;color:#8a7bbf;font-weight:600}
+.pcard.sel{border-color:var(--sun);background:#fffdf3;transform:scale(1.04)}
+.pcard.new{background:rgba(255,247,232,.12);color:var(--moonmilk);border:3px dashed rgba(255,247,232,.55);box-shadow:none}
+
+/* new friend form */
+.avgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:460px;margin:12px 0}
+.av{font-size:46px;background:var(--moonmilk);border-radius:22px;padding:12px 0;text-align:center;cursor:pointer;border:5px solid transparent;box-shadow:var(--shadow)}
+.av.sel{border-color:var(--sun);transform:scale(1.08)}
+#nameIn{font-family:'Baloo 2';font-weight:700;font-size:26px;text-align:center;border:none;border-radius:20px;padding:14px;width:min(90%,340px);color:var(--ink);outline:4px solid transparent}
+#nameIn:focus{outline-color:var(--sun)}
+
+/* ---------- world map ---------- */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;width:100%;max-width:720px;margin-top:6px;padding-bottom:8px}
+.world{border:none;cursor:pointer;border-radius:30px;padding:18px 10px 14px;text-align:center;color:#fff;font-family:'Baloo 2';box-shadow:var(--shadow), inset 0 4px 0 rgba(255,255,255,.28);transition:transform .12s;position:relative}
+.world:active{transform:translateY(5px)}
+.world .wemoji{font-size:54px;line-height:1;display:block;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
+.world .wname{font-weight:800;font-size:21px;display:block;margin-top:8px;line-height:1.1}
+.world .wlvl{display:inline-block;margin-top:8px;background:rgba(0,0,0,.22);border-radius:999px;padding:3px 12px;font-size:14px;font-weight:700}
+.w-rainbow{background:linear-gradient(160deg,#ff8a8a,#f5576c)}
+.w-colors{background:linear-gradient(160deg,#ffd76b,#f59e23);color:#5c3d00}
+.w-colors .wlvl{background:rgba(92,61,0,.18)}
+.w-garden{background:linear-gradient(160deg,#7ee2a8,#2f9e63)}
+.w-energy{background:linear-gradient(160deg,#7fc2ff,#3a7bd5)}
+.w-space{background:linear-gradient(160deg,#6b5ce7,#3d2f8f)}
+.w-story{background:linear-gradient(160deg,#ff9cc0,#e2568f)}
+
+/* ---------- game shared ---------- */
+.gamewrap{width:100%;max-width:640px;display:flex;flex-direction:column;align-items:center;flex:1}
+.prompt{font-family:'Baloo 2';font-weight:800;font-size:clamp(24px,6vw,34px);text-align:center;line-height:1.2;margin:6px 0 14px;text-shadow:0 3px 0 rgba(0,0,0,.25);max-width:22ch}
+.turnchip{font-family:'Baloo 2';font-weight:800;font-size:19px;background:var(--moonmilk);color:var(--ink);border-radius:999px;padding:8px 20px;box-shadow:var(--shadow);margin-bottom:6px;display:none;align-items:center;gap:8px}
+.ogrid{display:grid;gap:16px;width:100%;grid-template-columns:repeat(2,1fr)}
+.ogrid.one{grid-template-columns:1fr;max-width:380px}
+.opt{border:none;cursor:pointer;border-radius:26px;min-height:120px;padding:14px 10px;font-family:'Baloo 2';font-weight:800;font-size:clamp(19px,4.6vw,26px);color:#fff;box-shadow:var(--shadow), inset 0 4px 0 rgba(255,255,255,.3);transition:transform .12s;line-height:1.15}
+.opt:active{transform:scale(.96)}
+.opt .oemoji{display:block;font-size:52px;line-height:1.1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
+.opt.right{animation:party .7s ease}
+.opt.wrong{animation:shake .5s ease}
+.opt.dim{opacity:.35;pointer-events:none}
+@keyframes party{0%{transform:scale(1)}30%{transform:scale(1.15) rotate(-3deg)}60%{transform:scale(1.08) rotate(3deg)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+.feedback{min-height:44px;font-family:'Baloo 2';font-weight:800;font-size:24px;margin-top:14px;text-align:center}
+
+/* baskets (garden sort) */
+.sortitem{font-size:min(26vw,120px);line-height:1;margin:4px 0 10px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 6px 4px rgba(0,0,0,.3))}
+.baskets{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%}
+.basket{border:none;cursor:pointer;border-radius:26px;padding:18px 8px;font-family:'Baloo 2';font-weight:800;font-size:clamp(19px,4.6vw,25px);color:#fff;box-shadow:var(--shadow), inset 0 4px 0 rgba(255,255,255,.3);transition:transform .12s}
+.basket:active{transform:scale(.96)}
+.basket .oemoji{display:block;font-size:48px}
+.b-sun{background:linear-gradient(180deg,#ffd76b,#f5a623);color:#5c3d00}
+.b-earth{background:linear-gradient(180deg,#b98a5f,#8a5a35)}
+.b-yes{background:linear-gradient(180deg,#7ee2a8,#2f9e63)}
+.b-ask{background:linear-gradient(180deg,#ff9cc0,#e2568f)}
+
+/* body figure (rainbow world + energy world) */
+.bodybox{width:min(78vw,320px);margin:0 auto}
+.cdot{cursor:pointer}
+.cdot circle{transition:transform .15s;transform-origin:center;transform-box:fill-box}
+.cdot:active circle{transform:scale(1.3)}
+.cdot .halo{animation:halo 2s ease-in-out infinite}
+@keyframes halo{0%,100%{opacity:.25}50%{opacity:.75}}
+.tracedot{cursor:pointer;font-family:'Baloo 2';font-weight:800}
+.tracedot.done circle{fill:var(--sun)}
+
+/* breathing star */
+#breathStar{font-size:110px;display:block;text-align:center;transition:transform 3.6s ease-in-out, filter 3.6s ease-in-out;filter:drop-shadow(0 0 18px rgba(255,200,74,.8))}
+#breathStar.in{transform:scale(1.7)}
+#breathStar.out{transform:scale(1)}
+
+/* story */
+.storypage{background:var(--moonmilk);color:var(--ink);border-radius:32px;box-shadow:var(--shadow);padding:22px 20px;width:100%;max-width:560px;text-align:center;margin-top:6px}
+.storypage .scene{font-size:min(17vw,86px);line-height:1.15;letter-spacing:6px}
+.storypage .stext{font-family:'Baloo 2';font-weight:700;font-size:clamp(20px,5vw,26px);line-height:1.35;margin-top:12px;min-height:3.6em}
+.dots{display:flex;gap:8px;justify-content:center;margin:14px 0 6px}
+.dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,247,232,.3)}
+.dots i.on{background:var(--sun)}
+
+/* celebration overlay */
+#cheer{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(29,23,71,.55);backdrop-filter:blur(3px)}
+#cheer.on{display:grid}
+#cheerCard{background:var(--moonmilk);color:var(--ink);border-radius:36px;padding:30px 26px;text-align:center;box-shadow:var(--shadow);max-width:min(88vw,420px);animation:pop-in .35s ease}
+#cheerCard .cbig{font-size:76px;line-height:1}
+#cheerCard h2{font-size:32px;margin:8px 0 4px}
+#cheerCard p{margin:0 0 16px;font-weight:500;color:#6a5aa0;font-size:19px}
+.confetti{position:fixed;top:-4vh;font-size:26px;z-index:51;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
+
+/* grown-ups panel */
+.panel{background:var(--moonmilk);color:var(--ink);border-radius:30px;box-shadow:var(--shadow);padding:22px;width:100%;max-width:560px}
+.panel h2{font-size:26px;margin-bottom:8px}
+.panel p{font-size:17px;line-height:1.5;font-family:'Fredoka';font-weight:400;margin:8px 0}
+.setrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:2px dashed #e4dcf5;font-weight:600;font-size:18px}
+.toggle{margin-left:auto;width:64px;height:36px;border-radius:999px;background:#d8cff0;border:none;cursor:pointer;position:relative;transition:background .2s}
+.toggle:before{content:"";position:absolute;top:4px;left:4px;width:28px;height:28px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 2px 4px rgba(0,0,0,.25)}
+.toggle.on{background:var(--sprout)}
+.toggle.on:before{left:32px}
+.linky{background:none;border:none;color:#7a5fd0;font-weight:700;font-size:17px;cursor:pointer;text-decoration:underline;font-family:'Fredoka'}
+
+.footnote{opacity:.65;font-size:14px;margin-top:14px;text-align:center;max-width:40ch}
+@media (min-width:700px){ .ogrid{gap:20px} .opt{min-height:140px} }
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<div id="hill"></div>
+
+<!-- SPLASH -->
+<section class="screen on" id="scr-splash">
+  <h1>Little Lights</h1>
+  <p class="sub">a magic garden of colors, plants &amp; stars 🌟</p>
+  <div class="splash-kid" id="splashKid"></div>
+  <button class="big-btn gold" id="btnStart">▶ &nbsp;Tap to play!</button>
+  <p class="footnote">Made with love by Boundless · sound on 🔊</p>
+</section>
+
+<!-- WHO'S PLAYING -->
+<section class="screen" id="scr-who">
+  <h2 style="font-size:clamp(28px,7vw,40px);text-shadow:0 3px 0 rgba(0,0,0,.25)">Who is playing? 👋</h2>
+  <p style="opacity:.85;margin:6px 0 0;text-align:center">Tap your friend! Tap more than one to play together.</p>
+  <div class="pgrid" id="pgrid"></div>
+  <button class="big-btn gold" id="btnGo" style="display:none">Let's play! 🎉</button>
+  <button class="linky" id="btnGrown1" style="color:#fff7e8;opacity:.7;margin-top:14px">for grown-ups</button>
+</section>
+
+<!-- NEW FRIEND -->
+<section class="screen" id="scr-new">
+  <h2 style="font-size:clamp(26px,7vw,36px);text-shadow:0 3px 0 rgba(0,0,0,.25)">Pick your animal! 🐾</h2>
+  <div class="avgrid" id="avgrid"></div>
+  <input id="nameIn" maxlength="12" placeholder="Your name (grown-up can type)">
+  <div style="display:flex;gap:12px;margin-top:16px">
+    <button class="big-btn ghost" id="btnNewBack">← Back</button>
+    <button class="big-btn gold" id="btnNewSave">All done! ✔</button>
+  </div>
+</section>
+
+<!-- WORLD MAP -->
+<section class="screen" id="scr-map">
+  <div class="topbar">
+    <button class="iconbtn" id="btnHome" aria-label="Change players">🏡</button>
+    <div class="chip" id="playerChip"></div>
+    <div class="spacer"></div>
+    <div class="chip" id="starChip">⭐ 0</div>
+    <button class="iconbtn" id="btnGrown2" aria-label="Grown-ups">⚙️</button>
+  </div>
+  <h2 style="font-size:clamp(24px,6vw,34px);text-shadow:0 3px 0 rgba(0,0,0,.25);margin:4px 0 8px">Pick a world! 🌈</h2>
+  <div class="wgrid" id="wgrid"></div>
+  <button class="iconbtn" id="btnMic" style="margin-top:14px;display:none" aria-label="Talk to me">🎤</button>
+</section>
+
+<!-- GAME (generic quiz / sort / bodytap) -->
+<section class="screen" id="scr-game">
+  <div class="topbar">
+    <button class="iconbtn" id="btnBack1" aria-label="Back to map">🗺️</button>
+    <div class="chip" id="gLvl"></div>
+    <div class="spacer"></div>
+    <div class="chip" id="gStars">⭐ 0</div>
+    <button class="iconbtn" id="btnSay1" aria-label="Say it again">🔊</button>
+  </div>
+  <div class="gamewrap">
+    <div class="turnchip" id="turnChip"></div>
+    <div class="prompt" id="gPrompt"></div>
+    <div id="gStage" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>
+    <div class="feedback" id="gFeed"></div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="screen" id="scr-story">
+  <div class="topbar">
+    <button class="iconbtn" id="btnBack2" aria-label="Back">🗺️</button>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="btnSay2" aria-label="Read it again">🔊</button>
+  </div>
+  <div class="gamewrap" id="storyWrap"></div>
+</section>
+
+<!-- GROWN-UPS -->
+<section class="screen" id="scr-grown">
+  <div class="topbar">
+    <button class="iconbtn" id="btnBack3" aria-label="Back">←</button>
+    <div class="spacer"></div>
+  </div>
+  <div class="panel">
+    <h2>For grown-ups 🧑‍🤝‍🧑</h2>
+    <p><b>Little Lights</b> is a narrated tap-and-learn game for ages 2–6: colors and their meanings, the seven "rainbow body lights" (chakras), plants that grow above and below the ground, calm-breathing and "energy rivers" (meridians), and space. Every prompt is read aloud, so pre-readers can play on their own.</p>
+    <p><b>Progress</b> saves on this device automatically — each child picks their animal and picks up where they left off. Levels adjust up and down on their own as your child answers.</p>
+    <p><b>Plant safety:</b> the garden game teaches one golden rule — <i>never eat any plant, berry, or mushroom without asking a grown-up first.</i> Please reinforce it in real life!</p>
+    <div class="setrow">🔊 Read everything out loud <button class="toggle on" id="tgVoice"></button></div>
+    <div class="setrow">🎤 Voice commands (say "home", "again", or an answer) <button class="toggle" id="tgMic"></button></div>
+    <div class="setrow">✨ Extra sparkles &amp; motion <button class="toggle on" id="tgFx"></button></div>
+    <div class="setrow"><button class="linky" id="btnReset">Erase all players &amp; progress</button></div>
+    <p class="footnote" style="margin:14px auto 0">Built by Boundless · boundless.mbf@gmail.com</p>
+  </div>
+</section>
+
+<!-- CHEER OVERLAY -->
+<div id="cheer"><div id="cheerCard">
+  <div class="cbig" id="cheerEmoji">🌟</div>
+  <h2 id="cheerTitle">Yay!</h2>
+  <p id="cheerText"></p>
+  <button class="big-btn gold" id="cheerBtn">Keep going! →</button>
+</div></div>
+
+<script>
+/* ============================================================
+   LITTLE LIGHTS — a Boundless learning garden (ages 2–6)
+   Single-file game. Progress saves in this browser.
+   ============================================================ */
+
+/* ---------------- DATA ---------------- */
+const AVATARS=['🐰','🦊','🐻','🐸','🦄','🐯','🐧','🐙'];
+const COLORS=[
+ {id:'red',   name:'Red',    hex:'#ff5757', dark:'#c73838', emoji:'🍓', means:'strong and full of energy'},
+ {id:'orange',name:'Orange', hex:'#ff9f43', dark:'#d97c1f', emoji:'🍊', means:'happy and playful'},
+ {id:'yellow',name:'Yellow', hex:'#ffd93d', dark:'#d9ae10', emoji:'☀️', means:'sunny and brave'},
+ {id:'green', name:'Green',  hex:'#6bcb77', dark:'#3f9e4d', emoji:'🌿', means:'growing and kind'},
+ {id:'blue',  name:'Blue',   hex:'#4d96ff', dark:'#2b6fd6', emoji:'💧', means:'calm and peaceful'},
+ {id:'purple',name:'Purple', hex:'#9b5de5', dark:'#7038b8', emoji:'🔮', means:'magical and dreamy'},
+ {id:'pink',  name:'Pink',   hex:'#ff8fab', dark:'#d95f82', emoji:'🌸', means:'sweet and loving'},
+ {id:'brown', name:'Brown',  hex:'#a97155', dark:'#7d4f38', emoji:'🐻', means:'cozy like the earth'}
+];
+const CHAKRAS=[
+ {name:'Red root light',      hex:'#ff5757', y:318, spot:'at the very bottom, by your hips',  power:'feel safe and strong'},
+ {name:'Orange belly light',  hex:'#ff9f43', y:283, spot:'in your lower belly',               power:'feel happy and creative'},
+ {name:'Yellow sunshine light',hex:'#ffd93d',y:248, spot:'in your tummy',                     power:'feel brave'},
+ {name:'Green heart light',   hex:'#6bcb77', y:206, spot:'in your heart',                     power:'love and be kind'},
+ {name:'Blue voice light',    hex:'#4d96ff', y:166, spot:'in your throat',                    power:'speak and sing'},
+ {name:'Indigo dream light',  hex:'#5d5fef', y:112, spot:'between your eyebrows',             power:'imagine and dream'},
+ {name:'Violet star light',   hex:'#b15dff', y:70,  spot:'at the top of your head',           power:'feel connected to everything'}
+];
+const PLANTS_ABOVE=[
+ {emoji:'🍎',name:'Apple'},{emoji:'🍅',name:'Tomato'},{emoji:'🍓',name:'Strawberry'},
+ {emoji:'🌽',name:'Corn'},{emoji:'🥦',name:'Broccoli'},{emoji:'🍇',name:'Grapes'},
+ {emoji:'🎃',name:'Pumpkin'},{emoji:'🍌',name:'Banana'}
+];
+const PLANTS_BELOW=[
+ {emoji:'🥕',name:'Carrot'},{emoji:'🥔',name:'Potato'},{emoji:'🧅',name:'Onion'},
+ {emoji:'🧄',name:'Garlic'},{emoji:'🍠',name:'Sweet potato'},{emoji:'🥜',name:'Peanut'}
+];
+const ABOVE_LINE='It grew up in the sunshine — light, lifting sun energy!';
+const BELOW_LINE='It grew hugged by the earth — strong, grounding earth energy!';
+const EDIBLE_ROUNDS=[
+ {emoji:'🍎',text:'A grown-up gives you apple slices.',ask:false},
+ {emoji:'🍄',text:'You find a mushroom in the grass.',ask:true},
+ {emoji:'🥕',text:'Dinner time! Carrots are on your plate.',ask:false},
+ {emoji:'🔴',text:'You see shiny red berries on a bush.',ask:true},
+ {emoji:'🌺',text:'You find a pretty flower in the park.',ask:true},
+ {emoji:'🍌',text:'Grandma hands you a banana.',ask:false},
+ {emoji:'🍃',text:'You see green leaves on a plant outside.',ask:true},
+ {emoji:'🍓',text:'A grown-up washes strawberries for you.',ask:false},
+ {emoji:'⚪',text:'You spot little white berries in the yard.',ask:true},
+ {emoji:'🫐',text:'Blueberries are in your snack bowl from a grown-up.',ask:false}
+];
+const SPACE_L1=[
+ {emoji:'☀️',name:'the Sun',clue:'It is big, hot, and lights up the day'},
+ {emoji:'🌙',name:'the Moon',clue:'It glows at night and changes shape'},
+ {emoji:'⭐',name:'a star',clue:'Tiny twinkly lights in the night sky'},
+ {emoji:'🌍',name:'Earth',clue:'Our home planet, blue and green'},
+ {emoji:'🚀',name:'a rocket',clue:'It zooms astronauts into space'},
+ {emoji:'☁️',name:'a cloud',clue:'Fluffy and floaty, it makes rain'}
+];
+const SPACE_L2=[
+ {emoji:'🔴',name:'Mars',clue:'the red planet'},
+ {emoji:'🪐',name:'Saturn',clue:'the planet with beautiful rings'},
+ {emoji:'🟠',name:'Jupiter',clue:'the biggest planet of all'},
+ {emoji:'🌍',name:'Earth',clue:'the planet we live on'},
+ {emoji:'🌙',name:'the Moon',clue:'Earth\u2019s glowing night friend'},
+ {emoji:'☀️',name:'the Sun',clue:'our very own star'}
+];
+const SPACE_L3=[
+ {q:'Which one is really a giant star?',right:{emoji:'☀️',name:'The Sun'},wrong:[{emoji:'🌙',name:'The Moon'},{emoji:'🌍',name:'Earth'},{emoji:'☁️',name:'A cloud'}]},
+ {q:'Which planet has rings like a hula hoop?',right:{emoji:'🪐',name:'Saturn'},wrong:[{emoji:'🔴',name:'Mars'},{emoji:'🌍',name:'Earth'},{emoji:'🟠',name:'Jupiter'}]},
+ {q:'Which one changes shape in the night sky?',right:{emoji:'🌙',name:'The Moon'},wrong:[{emoji:'☀️',name:'The Sun'},{emoji:'⭐',name:'The stars'},{emoji:'🚀',name:'A rocket'}]},
+ {q:'Which planet do we live on?',right:{emoji:'🌍',name:'Earth'},wrong:[{emoji:'🔴',name:'Mars'},{emoji:'🪐',name:'Saturn'},{emoji:'🟠',name:'Jupiter'}]},
+ {q:'Which one is the red planet?',right:{emoji:'🔴',name:'Mars'},wrong:[{emoji:'🌍',name:'Earth'},{emoji:'🌙',name:'The Moon'},{emoji:'🪐',name:'Saturn'}]},
+ {q:'What do astronauts ride to space?',right:{emoji:'🚀',name:'A rocket'},wrong:[{emoji:'🚗',name:'A car'},{emoji:'⛵',name:'A boat'},{emoji:'🚲',name:'A bike'}]}
+];
+const STORIES=[
+ {id:'rainbow',emoji:'🌈',title:'Rosie\u2019s Rainbow Inside',pages:[
+   {s:'👧🌙✨',t:'Rosie could not sleep. "I feel wiggly inside," she said.'},
+   {s:'🔴🦶🌳',t:'Grandma smiled. "Feel the red light by your hips. It says: you are safe and strong, like a tree."'},
+   {s:'🟢💚🤗',t:'"Now the green light in your heart. It glows when you hug and share."'},
+   {s:'🔵🎵🐦',t:'"The blue light in your throat loves to sing — la la la!"'},
+   {s:'🟣⭐😴',t:'"And the violet light on top of your head sparkles when you dream."'},
+   {s:'🌈👧💤',t:'Rosie felt all seven lights glow like a little rainbow inside. Soon she was fast asleep.'}]},
+ {id:'garden',emoji:'🥕',title:'The Carrot and the Apple',pages:[
+   {s:'🥕🌍🛏️',t:'Carrot lived under the ground, tucked in the cool dark earth like a cozy bed.'},
+   {s:'🍎🌳☀️',t:'Apple lived way up high in a tree, drinking sunshine all day long.'},
+   {s:'🥕💪🌍',t:'"The earth hugs me tight," said Carrot. "It makes me strong and grounded!"'},
+   {s:'🍎✨☀️',t:'"The sun kisses me all day," said Apple. "It makes me light and bright!"'},
+   {s:'🥕🍎🍽️',t:'At dinner they met on the very same plate. "Earth food and sun food — together we make you grow!"'},
+   {s:'👧🍽️😋',t:'And remember the golden rule: we only eat plants when a grown-up says it is safe. Crunch, crunch, yum!'}]},
+ {id:'space',emoji:'🚀',title:'Luna Visits the Moon',pages:[
+   {s:'👧🔭🌙',t:'Luna loved looking at the Moon. "Some nights you are round, some nights you are a banana!"'},
+   {s:'🚀✨🌌',t:'One night, a little dream rocket landed in her yard. Whoosh! Up, up, up they flew.'},
+   {s:'🌍💙👋',t:'From space, Earth looked like a beautiful blue marble. "That is our home!" Luna waved.'},
+   {s:'🌙🐇🦘',t:'On the Moon, Luna bounced in giant hops. Boing! Boing! There is less pulling-down there.'},
+   {s:'🪐⭐☀️',t:'She waved to Saturn with its rings, and to the Sun — a giant star that warms us all.'},
+   {s:'🛏️🌙💤',t:'Back in bed, Luna whispered, "Good night, Moon. See you tomorrow." And the Moon glowed back.'}]},
+ {id:'calm',emoji:'🌬️',title:'The Breathing Star',pages:[
+   {s:'🐻😤⛈️',t:'Little Bear felt grumpy and stormy inside. Grrr!'},
+   {s:'⭐🌬️✨',t:'A tiny star floated down. "When you feel stormy, breathe with me," it twinkled.'},
+   {s:'👃➡️🎈',t:'Breathe in through your nose... fill your belly like a balloon...'},
+   {s:'👄⬅️🍃',t:'And breathe out slowly... like wind through the leaves... whooooosh.'},
+   {s:'🐻💧🙂',t:'Little Bear felt rivers of calm flow from his head to his toes.'},
+   {s:'⭐🐻💛',t:'"The calm was inside you all along," said the star. "I just helped you find it."'}]}
+];
+const WORLDS=[
+ {id:'rainbow',name:'Rainbow Body',emoji:'🧘',cls:'w-rainbow'},
+ {id:'colors', name:'Color Magic', emoji:'🎨',cls:'w-colors'},
+ {id:'garden', name:'Garden Friends',emoji:'🥕',cls:'w-garden'},
+ {id:'energy', name:'Energy Rivers',emoji:'🌊',cls:'w-energy'},
+ {id:'space',  name:'Space Trip',  emoji:'🚀',cls:'w-space'},
+ {id:'story',  name:'Story Time',  emoji:'📖',cls:'w-story'}
+];
+const PRAISE=['Yay! You did it!','Amazing!','Super smart!','Wow, great job!','You are a star!','High five!','Beautiful!'];
+const OOPS=['Almost! Try again!','Good try! One more time!','So close! Look again!'];
+
+/* ---------------- STATE & STORAGE ---------------- */
+const SAVE_KEY='littleLights.v1';
+let DB={players:[],settings:{voice:true,mic:false,fx:true}};
+let mem=null;
+function load(){ try{const raw=localStorage.getItem(SAVE_KEY); if(raw) DB=JSON.parse(raw);}catch(e){ if(mem) DB=mem; } }
+function save(){ mem=DB; try{localStorage.setItem(SAVE_KEY,JSON.stringify(DB));}catch(e){} }
+function newPlayer(name,av){ return {name,av,stars:0,prog:{}}; }
+function prog(p,world){ if(!p.prog[world]) p.prog[world]={lvl:1,streak:0,miss:0,done:0}; return p.prog[world]; }
+
+let party=[];      // selected players (1 = solo, 2+ = take turns)
+let turn=0;
+let curWorld=null;
+let editingNewName='';
+
+const $=id=>document.getElementById(id);
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
+
+/* ---------------- SPEECH (out loud) ---------------- */
+let voiceReady=false, pickedVoice=null;
+function pickVoice(){
+  const vs=speechSynthesis.getVoices();
+  if(!vs.length) return;
+  pickedVoice = vs.find(v=>/en/i.test(v.lang)&&/female|zira|samantha|karen|jenny|aria|google us english/i.test(v.name))
+             || vs.find(v=>/^en/i.test(v.lang)) || vs[0];
+  voiceReady=true;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function say(text,opts={}){
+  if(!DB.settings.voice || !('speechSynthesis' in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/\p{Extended_Pictographic}/gu,'').replace(/\s+/g,' '));
+    if(pickedVoice) u.voice=pickedVoice;
+    u.rate=opts.rate||0.92; u.pitch=opts.pitch||1.15;
+    if(opts.onend) u.onend=opts.onend;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+let lastLine='';
+function narrate(text,opts){ lastLine=text; say(text,opts); }
+
+/* ---------------- SOUND FX ---------------- */
+let AC=null;
+function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
+function tone(freq,dur,delay=0,type='sine',vol=.18){
+  const c=ac(); if(!c) return;
+  const o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.value=freq;o.connect(g);g.connect(c.destination);
+  const t=c.currentTime+delay;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.start(t);o.stop(t+dur+.05);
+}
+const sfx={
+  tap(){tone(520,.09)},
+  yes(){tone(523,.12);tone(659,.12,.1);tone(784,.16,.2);tone(1047,.3,.32)},
+  no(){tone(220,.2,0,'triangle',.12)},
+  level(){[523,587,659,784,880,1047].forEach((f,i)=>tone(f,.12,i*.07))},
+  pop(){tone(880,.06,0,'square',.08)}
+};
+
+/* ---------------- SKY / CONFETTI ---------------- */
+(function sky(){
+  const s=$('sky');
+  for(let i=0;i<34;i++){const d=document.createElement('i');d.className='tw';
+    d.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*70}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-delay:${Math.random()*3}s`;
+    s.appendChild(d);}
+  for(let i=0;i<7;i++){const f=document.createElement('i');f.className='firefly';
+    f.style.cssText=`left:${5+Math.random()*90}%;top:${45+Math.random()*45}%;animation-delay:${Math.random()*6}s`;
+    s.appendChild(f);}
+})();
+function confetti(n=26){
+  if(!DB.settings.fx) return;
+  const em=['🎉','⭐','🌟','✨','🌈','💛','💚','💙','💜'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.textContent=em[Math.floor(Math.random()*em.length)];
+    c.style.left=Math.random()*100+'vw';
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4200);
+  }
+}
+function cheer(emoji,title,text,btn,cb){
+  $('cheerEmoji').textContent=emoji;$('cheerTitle').textContent=title;$('cheerText').textContent=text;
+  $('cheerBtn').textContent=btn||'Keep going! →';
+  $('cheer').classList.add('on'); confetti(); sfx.level();
+  say(title+'. '+text);
+  $('cheerBtn').onclick=()=>{$('cheer').classList.remove('on'); if(cb)cb();};
+}
+
+/* ---------------- SVG KID FIGURE ---------------- */
+function kidSVG(withDots,dotHandler,traceMode){
+  const w=document.createElement('div');w.className='bodybox';
+  let dots='';
+  if(withDots){
+    CHAKRAS.forEach((c,i)=>{
+      dots+=`<g class="cdot" data-i="${i}">
+        <circle class="halo" cx="150" cy="${c.y}" r="26" fill="${c.hex}" opacity=".3"/>
+        <circle cx="150" cy="${c.y}" r="15" fill="${c.hex}" stroke="#fff" stroke-width="3"/>
+      </g>`;
+    });
+  }
+  w.innerHTML=`<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+    <ellipse cx="150" cy="382" rx="90" ry="12" fill="rgba(0,0,0,.2)"/>
+    <path d="M150 150 C 92 150 78 215 84 275 C 88 320 108 368 150 368 C 192 368 212 320 216 275 C 222 215 208 150 150 150 Z" fill="#ffe3c7" stroke="#e8b98c" stroke-width="4"/>
+    <path d="M95 205 C 60 225 52 265 62 292" fill="none" stroke="#ffe3c7" stroke-width="26" stroke-linecap="round"/>
+    <path d="M205 205 C 240 225 248 265 238 292" fill="none" stroke="#ffe3c7" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="150" cy="98" r="58" fill="#ffe3c7" stroke="#e8b98c" stroke-width="4"/>
+    <path d="M92 84 Q 150 18 208 84 Q 186 56 150 56 Q 114 56 92 84 Z" fill="#6b4a2f"/>
+    <circle cx="130" cy="100" r="6.5" fill="#3a2e6e"/>
+    <circle cx="170" cy="100" r="6.5" fill="#3a2e6e"/>
+    <path d="M132 122 Q 150 138 168 122" fill="none" stroke="#c96f4a" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="116" cy="114" r="7" fill="#ffb3a0" opacity=".7"/>
+    <circle cx="184" cy="114" r="7" fill="#ffb3a0" opacity=".7"/>
+    <g id="dotLayer">${dots}</g>
+    <g id="traceLayer"></g>
+  </svg>`;
+  if(withDots&&dotHandler){
+    w.querySelectorAll('.cdot').forEach(g=>{
+      g.addEventListener('pointerdown',()=>dotHandler(+g.dataset.i,g));
+    });
+  }
+  return w;
+}
+/* ---------------- NAV & PROFILES ---------------- */
+$('btnStart').addEventListener('pointerdown',()=>{
+  ac(); // unlock audio on first tap
+  sfx.pop();
+  say('Hello! Welcome to Little Lights! Who is playing today?');
+  renderWho(); show('scr-who');
+});
+$('splashKid').appendChild(kidSVG(true,null));
+
+function renderWho(){
+  const g=$('pgrid'); g.innerHTML='';
+  DB.players.forEach((p,i)=>{
+    const c=document.createElement('div');c.className='pcard';
+    c.innerHTML=`<div class="face">${p.av}</div><div class="pname">${p.name}</div><div class="pstars">⭐ ${p.stars}</div>`;
+    c.addEventListener('pointerdown',()=>{
+      sfx.tap();
+      c.classList.toggle('sel');
+      const sel=[...g.querySelectorAll('.pcard.sel')];
+      $('btnGo').style.display = sel.length? 'inline-block':'none';
+      if(c.classList.contains('sel')) say(p.name+'!');
+    });
+    c.dataset.i=i; g.appendChild(c);
+  });
+  const add=document.createElement('div');add.className='pcard new';
+  add.innerHTML=`<div class="face">➕</div><div class="pname">New friend</div><div class="pstars">&nbsp;</div>`;
+  add.addEventListener('pointerdown',()=>{sfx.tap(); openNew();});
+  g.appendChild(add);
+  if(DB.players.length===0){ say('Tap the plus to make your very first friend!'); }
+}
+$('btnGo').addEventListener('pointerdown',()=>{
+  const sel=[...document.querySelectorAll('#pgrid .pcard.sel')].map(c=>DB.players[+c.dataset.i]);
+  if(!sel.length) return;
+  party=sel; turn=0; sfx.yes();
+  if(party.length>1) say('Yay! '+party.map(p=>p.name).join(' and ')+' are playing together! Take turns and be kind!');
+  openMap();
+});
+
+let newAv=null;
+function openNew(){
+  newAv=null; $('nameIn').value='';
+  const g=$('avgrid'); g.innerHTML='';
+  AVATARS.forEach(a=>{
+    const d=document.createElement('div');d.className='av';d.textContent=a;
+    d.addEventListener('pointerdown',()=>{
+      sfx.tap();
+      g.querySelectorAll('.av').forEach(x=>x.classList.remove('sel'));
+      d.classList.add('sel'); newAv=a;
+    });
+    g.appendChild(d);
+  });
+  say('Pick your animal! Then a grown-up can type your name.');
+  show('scr-new');
+}
+$('btnNewBack').addEventListener('pointerdown',()=>{renderWho();show('scr-who');});
+$('btnNewSave').addEventListener('pointerdown',()=>{
+  if(!newAv){ say('Tap an animal first!'); return; }
+  const name=($('nameIn').value.trim()||({'🐰':'Bunny','🦊':'Foxy','🐻':'Bear','🐸':'Froggy','🦄':'Sparkle','🐯':'Tiger','🐧':'Penguin','🐙':'Octo'})[newAv]);
+  DB.players.push(newPlayer(name,newAv)); save();
+  sfx.yes(); say('Hooray! Hello, '+name+'!');
+  renderWho(); show('scr-who');
+});
+
+/* ---------------- WORLD MAP ---------------- */
+function partyStars(){ return party.reduce((s,p)=>s+p.stars,0); }
+function openMap(){
+  curWorld=null;
+  $('playerChip').textContent = party.map(p=>p.av+' '+p.name).join('  ·  ');
+  $('starChip').textContent = '⭐ '+partyStars();
+  const g=$('wgrid'); g.innerHTML='';
+  WORLDS.forEach(w=>{
+    const lv = Math.max(...party.map(p=>prog(p,w.id).lvl));
+    const b=document.createElement('button');b.className='world '+w.cls;
+    b.innerHTML=`<span class="wemoji">${w.emoji}</span><span class="wname">${w.name}</span>`+
+      (w.id!=='story'?`<span class="wlvl">Level ${lv}</span>`:`<span class="wlvl">4 stories</span>`);
+    b.addEventListener('pointerdown',()=>{sfx.tap(); startWorld(w.id);});
+    g.appendChild(b);
+  });
+  $('btnMic').style.display = (DB.settings.mic && SR)? 'grid':'none';
+  show('scr-map');
+  if(!openMap.said){ say('Pick a world! '+WORLDS.map(w=>w.name).join('. ')+'.'); openMap.said=true; }
+  else say('Pick a world!');
+}
+$('btnHome').addEventListener('pointerdown',()=>{sfx.tap();renderWho();show('scr-who');});
+
+/* ---------------- GAME CORE (turns, stars, levels) ---------------- */
+function curPlayer(){ return party[turn%party.length]; }
+function nextTurn(){ if(party.length>1) turn++; }
+function showTurn(){
+  const t=$('turnChip');
+  if(party.length>1){ const p=curPlayer(); t.style.display='flex'; t.innerHTML=p.av+' '+p.name+'\u2019s turn!'; }
+  else t.style.display='none';
+}
+function award(p,world){
+  p.stars++; const pr=prog(p,world); pr.done++; pr.streak++; pr.miss=0; save();
+  $('gStars').textContent='⭐ '+partyStars();
+  // level up after 4 in a row
+  if(pr.streak>=4 && pr.lvl<3){
+    pr.lvl++; pr.streak=0; save();
+    cheer('🚀','Level up!','You are now on level '+pr.lvl+'! The game gets a little trickier — you can do it!','Let\u2019s go!',()=>nextQ());
+    return true;
+  }
+  // milestone every 10 total stars
+  if(p.stars%10===0){
+    cheer('🌟',p.name+' has '+p.stars+' stars!','What a bright little light you are!','Keep going!',()=>nextQ());
+    return true;
+  }
+  return false;
+}
+function miss(p,world){
+  const pr=prog(p,world); pr.streak=0; pr.miss++;
+  if(pr.miss>=3 && pr.lvl>1){ pr.lvl--; pr.miss=0; say('Let\u2019s try some easier ones together!'); }
+  save();
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function pick(arr,n){ return shuffle(arr).slice(0,n); }
+function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+let nextQ=()=>{};
+let liveOptions=[]; // for voice answers: [{label, el}]
+function setGameChrome(worldId){
+  const p=curPlayer(), pr=prog(p,worldId);
+  $('gLvl').textContent='Level '+pr.lvl;
+  $('gStars').textContent='⭐ '+partyStars();
+  $('gFeed').textContent='';
+  showTurn();
+}
+function startWorld(id){
+  curWorld=id;
+  if(id==='story') return openStoryMenu();
+  if(id==='energy') return openEnergyMenu();
+  show('scr-game');
+  nextQ = {rainbow:qRainbow, colors:qColors, garden:qGarden, space:qSpace}[id];
+  nextQ();
+}
+$('btnBack1').addEventListener('pointerdown',()=>{window.speechSynthesis&&speechSynthesis.cancel();openMap();});
+$('btnBack2').addEventListener('pointerdown',()=>{window.speechSynthesis&&speechSynthesis.cancel();openMap();});
+$('btnSay1').addEventListener('pointerdown',()=>say(lastLine));
+$('btnSay2').addEventListener('pointerdown',()=>say(lastLine));
+
+function optionCards(opts,onPick,cols){
+  const grid=document.createElement('div');grid.className='ogrid';
+  if(cols===1)grid.classList.add('one');
+  liveOptions=[];
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='opt';
+    b.style.background=`linear-gradient(180deg,${o.hex||'#8f7bd8'},${o.dark||'#6a55b5'})`;
+    b.innerHTML=(o.emoji?`<span class="oemoji">${o.emoji}</span>`:'')+(o.label||'');
+    b.addEventListener('pointerdown',()=>onPick(o,b));
+    liveOptions.push({label:(o.say||o.label||'').toLowerCase(),el:b});
+    grid.appendChild(b);
+  });
+  return grid;
+}
+function handleAnswer(correct,btn,worldId,explain){
+  const p=curPlayer();
+  if(correct){
+    sfx.yes(); btn.classList.add('right'); confetti(14);
+    $('gFeed').textContent=rand(PRAISE)+' ⭐';
+    const line=rand(PRAISE)+(explain?' '+explain:'');
+    say(line);
+    const paused=award(p,worldId);
+    nextTurn();
+    if(!paused) setTimeout(()=>nextQ(), 1900);
+  }else{
+    sfx.no(); btn.classList.add('wrong'); btn.classList.add('dim');
+    $('gFeed').textContent=rand(OOPS);
+    say(rand(OOPS));
+    miss(p,worldId);
+    setTimeout(()=>btn.classList.remove('wrong'),600);
+  }
+}
+
+/* ---------------- WORLD: RAINBOW BODY (chakras) ---------------- */
+function qRainbow(){
+  setGameChrome('rainbow');
+  const p=curPlayer(), lvl=prog(p,'rainbow').lvl;
+  const stage=$('gStage'); stage.innerHTML='';
+  if(lvl<3){
+    const c=rand(CHAKRAS);
+    const q = lvl===1
+      ? `Tap the ${c.name}! It lives ${c.spot}.`
+      : `Which light helps you ${c.power}? Tap it!`;
+    $('gPrompt').textContent = lvl===1 ? `Tap the ${c.name}!` : `Which light helps you ${c.power}?`;
+    narrate(q);
+    const fig=kidSVG(true,(i,g)=>{
+      const hit = CHAKRAS[i]===c;
+      if(hit){ g.querySelector('.halo').setAttribute('opacity','.9'); }
+      handleAnswer(hit, gFakeBtn(g), 'rainbow', hit?`The ${c.name} helps you ${c.power}!`:null);
+    });
+    stage.appendChild(fig);
+    liveOptions=CHAKRAS.map((ch,i)=>({label:ch.name.split(' ')[0].toLowerCase(),el:fig.querySelectorAll('.cdot')[i]}));
+  }else{
+    const c=rand(CHAKRAS);
+    $('gPrompt').textContent=`Which color light helps you ${c.power}?`;
+    narrate($('gPrompt').textContent);
+    const wrong=pick(CHAKRAS.filter(x=>x!==c),3);
+    const opts=shuffle([c,...wrong]).map(ch=>{
+      const colorWord=ch.name.split(' ')[0];
+      return {emoji:'🔆',label:colorWord,say:colorWord,hex:ch.hex,dark:'#00000033',ok:ch===c};
+    });
+    stage.appendChild(optionCards(opts,(o,b)=>handleAnswer(o.ok,b,'rainbow',o.ok?`The ${c.name} lives ${c.spot}.`:null)));
+  }
+}
+// wrap an svg group so handleAnswer can animate something button-like
+function gFakeBtn(g){ return { classList:{ add(cls){ if(cls==='right'){g.querySelector('circle:last-of-type').setAttribute('r','20');} if(cls==='wrong'){g.style.animation='shake .5s ease';setTimeout(()=>g.style.animation='',600);} if(cls==='dim'){g.style.opacity='.35';} }, remove(){}, } }; }
+
+/* ---------------- WORLD: COLOR MAGIC ---------------- */
+const MIXES=[
+ {a:'Red',b:'Yellow',makes:'Orange',hex:'#ff9f43'},
+ {a:'Blue',b:'Yellow',makes:'Green',hex:'#6bcb77'},
+ {a:'Red',b:'Blue',makes:'Purple',hex:'#9b5de5'},
+ {a:'Red',b:'White',makes:'Pink',hex:'#ff8fab'}
+];
+function qColors(){
+  setGameChrome('colors');
+  const p=curPlayer(), lvl=prog(p,'colors').lvl;
+  const stage=$('gStage'); stage.innerHTML='';
+  const n = lvl===1?2 : lvl===2?3 : 4;
+  if(lvl<=2){
+    const c=rand(COLORS.slice(0, lvl===1?6:8));
+    const isL1 = lvl===1;
+    $('gPrompt').textContent = isL1 ? `Tap ${c.name}!` : `Which color feels ${c.means}?`;
+    narrate($('gPrompt').textContent);
+    const wrong=pick(COLORS.filter(x=>x!==c),n-1);
+    const opts=shuffle([c,...wrong]).map(cc=>({emoji:cc.emoji,label:cc.name,say:cc.name,hex:cc.hex,dark:cc.dark,ok:cc===c}));
+    stage.appendChild(optionCards(opts,(o,b)=>handleAnswer(o.ok,b,'colors',o.ok?`${c.name} feels ${c.means}!`:null)));
+  }else{
+    const m=rand(MIXES);
+    $('gPrompt').textContent=`Magic mixing! ${m.a} + ${m.b} makes…?`;
+    narrate($('gPrompt').textContent);
+    const rightC=COLORS.find(c=>c.name===m.makes);
+    const wrong=pick(COLORS.filter(c=>c.name!==m.makes),3);
+    const opts=shuffle([rightC,...wrong]).map(cc=>({emoji:cc.emoji,label:cc.name,say:cc.name,hex:cc.hex,dark:cc.dark,ok:cc.name===m.makes}));
+    stage.appendChild(optionCards(opts,(o,b)=>handleAnswer(o.ok,b,'colors',o.ok?`${m.a} and ${m.b} make ${m.makes}!`:null)));
+  }
+}
+
+/* ---------------- WORLD: GARDEN FRIENDS ---------------- */
+function qGarden(){
+  setGameChrome('garden');
+  const p=curPlayer(), lvl=prog(p,'garden').lvl;
+  const stage=$('gStage'); stage.innerHTML='';
+  if(lvl<=2){
+    const above=Math.random()<.5;
+    const it=rand(above?PLANTS_ABOVE:PLANTS_BELOW);
+    $('gPrompt').textContent=`${it.name}! Does it grow above or below the ground?`;
+    narrate(`Here is a ${it.name}! Does it grow above the ground in the sunshine, or below the ground in the earth?`);
+    const item=document.createElement('div');item.className='sortitem';item.textContent=it.emoji;
+    stage.appendChild(item);
+    const bs=document.createElement('div');bs.className='baskets';
+    const mk=(cls,emoji,label,ok,explain)=>{
+      const b=document.createElement('button');b.className='basket '+cls;
+      b.innerHTML=`<span class="oemoji">${emoji}</span>${label}`;
+      b.addEventListener('pointerdown',()=>handleAnswer(ok,b,'garden',ok?explain:null));
+      liveOptions.push({label:label.toLowerCase(),el:b});
+      bs.appendChild(b);
+    };
+    liveOptions=[];
+    mk('b-sun','☀️','Above the ground', above, ABOVE_LINE);
+    mk('b-earth','🌍','Below the ground', !above, BELOW_LINE);
+    stage.appendChild(bs);
+  }else{
+    const r=rand(EDIBLE_ROUNDS);
+    $('gPrompt').textContent=r.text;
+    narrate(r.text+' What do we do?');
+    const item=document.createElement('div');item.className='sortitem';item.textContent=r.emoji;
+    stage.appendChild(item);
+    const bs=document.createElement('div');bs.className='baskets';
+    liveOptions=[];
+    const mk=(cls,emoji,label,ok,explain)=>{
+      const b=document.createElement('button');b.className='basket '+cls;
+      b.innerHTML=`<span class="oemoji">${emoji}</span>${label}`;
+      b.addEventListener('pointerdown',()=>handleAnswer(ok,b,'garden',ok?explain:null));
+      liveOptions.push({label:label.toLowerCase(),el:b});
+      bs.appendChild(b);
+    };
+    mk('b-yes','😋','Yummy — a grown-up said yes!', !r.ask, 'A grown-up said it is safe, so we can enjoy it!');
+    mk('b-ask','🙋','Stop! Ask a grown-up first', r.ask, 'That is the golden rule! We never eat plants, berries, or mushrooms we find, without asking a grown-up first.');
+    stage.appendChild(bs);
+  }
+}
+
+/* ---------------- WORLD: SPACE TRIP ---------------- */
+function qSpace(){
+  setGameChrome('space');
+  const p=curPlayer(), lvl=prog(p,'space').lvl;
+  const stage=$('gStage'); stage.innerHTML='';
+  if(lvl<=2){
+    const bank= lvl===1?SPACE_L1:SPACE_L2;
+    const n= lvl===1?2:3;
+    const c=rand(bank);
+    $('gPrompt').textContent=`Find ${c.name}!`;
+    narrate(`Find ${c.name}! ${c.clue}.`);
+    const wrong=pick(bank.filter(x=>x!==c),n-1);
+    const opts=shuffle([c,...wrong]).map(s=>({emoji:s.emoji,label:s.name.replace(/^the |^a /,''),say:s.name,hex:'#6b5ce7',dark:'#3d2f8f',ok:s===c}));
+    stage.appendChild(optionCards(opts,(o,b)=>handleAnswer(o.ok,b,'space',o.ok?`${c.name}: ${c.clue}!`:null)));
+  }else{
+    const q=rand(SPACE_L3);
+    $('gPrompt').textContent=q.q;
+    narrate(q.q);
+    const opts=shuffle([{...q.right,ok:true},...q.wrong.map(w=>({...w,ok:false}))])
+      .map(s=>({emoji:s.emoji,label:s.name,say:s.name,hex:'#6b5ce7',dark:'#3d2f8f',ok:s.ok}));
+    stage.appendChild(optionCards(opts,(o,b)=>handleAnswer(o.ok,b,'space')));
+  }
+}
+
+/* ---------------- WORLD: ENERGY RIVERS ---------------- */
+function openEnergyMenu(){
+  show('scr-game');
+  setGameChrome('energy');
+  $('gPrompt').textContent='Energy Rivers 🌊';
+  narrate('Energy Rivers! Your body has little rivers of energy inside. Pick one: trace a river, or breathe with the star.');
+  const stage=$('gStage'); stage.innerHTML='';
+  const grid=optionCards([
+    {emoji:'👆',label:'Trace a river',say:'trace',hex:'#7fc2ff',dark:'#3a7bd5',act:'trace'},
+    {emoji:'⭐',label:'Breathing star',say:'breathe',hex:'#ffd76b',dark:'#d9a010',act:'breath'}
+  ],(o)=>{ o.act==='trace'?startTrace():startBreath(); });
+  stage.appendChild(grid);
+  nextQ=openEnergyMenu;
+}
+const RIVERS=[
+ {name:'Sunbeam River, right down the middle', pts:t=>CHAKRAS.map(c=>[150,c.y])},
+ {name:'Arm River, from your shoulder to your hand', pts:t=>[[110,190],[86,225],[68,258],[62,290]]},
+ {name:'Other Arm River', pts:t=>[[190,190],[214,225],[232,258],[238,290]]}
+];
+function startTrace(){
+  setGameChrome('energy');
+  const p=curPlayer(), lvl=prog(p,'energy').lvl;
+  const river= lvl===1?RIVERS[1] : rand(RIVERS);
+  let pts=river.pts();
+  if(lvl===1) pts=pts.slice(0,3);
+  if(lvl===2 && pts.length>5) pts=pts.filter((_,i)=>i%2===0||i===pts.length-1);
+  $('gPrompt').textContent='Tap the numbers in order!';
+  narrate('This is the '+river.name+'. Tap number one, then two, then three — feel the energy flow!');
+  const stage=$('gStage'); stage.innerHTML='';
+  const fig=kidSVG(false,null);
+  stage.appendChild(fig);
+  const layer=fig.querySelector('#traceLayer');
+  let need=0;
+  pts.forEach((pt,i)=>{
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','tracedot');
+    g.innerHTML=`<circle cx="${pt[0]}" cy="${pt[1]}" r="19" fill="#59a8ff" stroke="#fff" stroke-width="3"/>
+      <text x="${pt[0]}" y="${pt[1]+7}" text-anchor="middle" font-size="22" fill="#fff" font-family="Baloo 2">${i+1}</text>`;
+    g.addEventListener('pointerdown',()=>{
+      if(i===need){
+        sfx.pop(); g.classList.add('done');
+        if(need>0){
+          const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+          const pr=pts[need-1];
+          l.setAttribute('x1',pr[0]);l.setAttribute('y1',pr[1]);l.setAttribute('x2',pt[0]);l.setAttribute('y2',pt[1]);
+          l.setAttribute('stroke','#ffd93d');l.setAttribute('stroke-width','8');l.setAttribute('stroke-linecap','round');
+          layer.insertBefore(l,layer.firstChild);
+        }
+        need++;
+        if(need===pts.length){
+          $('gFeed').textContent='The river is glowing! ⭐';
+          say('Whoosh! The energy river is glowing! Beautiful tracing!');
+          confetti(16);
+          const paused=award(p,'energy'); nextTurn();
+          if(!paused) setTimeout(openEnergyMenu,2200);
+        }
+      }else{ sfx.no(); g.style.animation='shake .4s ease'; setTimeout(()=>g.style.animation='',450); }
+    });
+    layer.appendChild(g);
+  });
+}
+function startBreath(){
+  setGameChrome('energy');
+  $('gPrompt').textContent='Breathe with the star ⭐';
+  const stage=$('gStage'); stage.innerHTML='<span id="breathStar">⭐</span><div style="font-family:\'Baloo 2\';font-weight:800;font-size:26px;margin-top:18px" id="breathTxt"></div>';
+  narrate('Let\u2019s breathe with the star. Watch it grow and shrink. Ready?');
+  const star=$('breathStar'), txt=$('breathTxt');
+  let cyc=0;
+  function cycle(){
+    star.classList.remove('out');star.classList.add('in');
+    txt.textContent='Breathe in… 🎈'; say('Breathe in through your nose…',{rate:.8});
+    setTimeout(()=>{
+      star.classList.remove('in');star.classList.add('out');
+      txt.textContent='Breathe out… 🍃'; say('And slowly breathe out…',{rate:.8});
+      setTimeout(()=>{
+        cyc++;
+        if(cyc<3) cycle();
+        else{
+          txt.textContent='So calm! ⭐';
+          say('Wonderful. Do you feel the calm river inside you?');
+          const paused=award(curPlayer(),'energy'); nextTurn();
+          if(!paused) setTimeout(openEnergyMenu,2400);
+        }
+      },3800);
+    },3800);
+  }
+  setTimeout(cycle,1600);
+}
+
+/* ---------------- WORLD: STORY TIME ---------------- */
+let storyIdx=0,pageIdx=0;
+function openStoryMenu(){
+  show('scr-game');
+  setGameChrome('story');
+  $('gLvl').textContent='📖 Stories';
+  $('gPrompt').textContent='Pick a story!';
+  narrate('Story time! Pick a story and I will read it to you.');
+  const stage=$('gStage'); stage.innerHTML='';
+  const opts=STORIES.map((s,i)=>({emoji:s.emoji,label:s.title,say:s.title,hex:'#ff9cc0',dark:'#c14a7c',i}));
+  stage.appendChild(optionCards(opts,(o)=>{storyIdx=o.i;pageIdx=0;openStory();}));
+  nextQ=openStoryMenu;
+}
+function openStory(){
+  show('scr-story');
+  renderPage();
+}
+function renderPage(){
+  const st=STORIES[storyIdx], pg=st.pages[pageIdx];
+  const w=$('storyWrap');
+  w.innerHTML=`
+   <h2 style="font-size:clamp(22px,5.5vw,30px);text-shadow:0 3px 0 rgba(0,0,0,.25);text-align:center">${st.emoji} ${st.title}</h2>
+   <div class="storypage"><div class="scene">${pg.s}</div><div class="stext">${pg.t}</div></div>
+   <div class="dots">${st.pages.map((_,i)=>`<i class="${i===pageIdx?'on':''}"></i>`).join('')}</div>
+   <div style="display:flex;gap:12px;margin-top:6px">
+     ${pageIdx>0?'<button class="big-btn ghost" id="pgPrev">←</button>':''}
+     <button class="big-btn berry" id="pgNext">${pageIdx<st.pages.length-1?'Next →':'The end! ⭐'}</button>
+   </div>`;
+  narrate(pg.t,{rate:.88});
+  const nx=$('pgNext');
+  nx.addEventListener('pointerdown',()=>{
+    sfx.tap();
+    if(pageIdx<st.pages.length-1){ pageIdx++; renderPage(); }
+    else{
+      party.forEach(p=>{p.stars++;}); save();
+      cheer(st.emoji,'The end!','Everyone gets a story star! ⭐','Another story!',()=>openStoryMenu());
+    }
+  });
+  const pv=$('pgPrev'); if(pv) pv.addEventListener('pointerdown',()=>{pageIdx--;renderPage();});
+}
+
+/* ---------------- VOICE COMMANDS (optional) ---------------- */
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition||null;
+let rec=null, listening=false;
+function startListen(){
+  if(!SR||listening) return;
+  rec=new SR(); rec.lang='en-US'; rec.interimResults=false; rec.maxAlternatives=3;
+  listening=true; $('btnMic').style.background='#ffd76b';
+  rec.onresult=e=>{
+    const heard=[...e.results[0]].map(r=>r.transcript.toLowerCase()).join(' ');
+    if(/home|map|back/.test(heard)){ openMap(); return; }
+    if(/again|repeat/.test(heard)){ say(lastLine); return; }
+    const hit=liveOptions.find(o=>o.label && heard.includes(o.label.toLowerCase().split(' ')[0]));
+    if(hit && hit.el){ hit.el.dispatchEvent(new Event('pointerdown')); }
+    else say('I heard '+heard+'. Try tapping, or say it again!');
+  };
+  rec.onend=()=>{ listening=false; $('btnMic').style.background=''; };
+  rec.onerror=()=>{ listening=false; $('btnMic').style.background=''; };
+  try{ rec.start(); say('I\u2019m listening!'); }catch(e){ listening=false; }
+}
+$('btnMic').addEventListener('pointerdown',startListen);
+// mic buttons also live on the game screen via long-press of the speaker? keep simple: map screen only.
+
+/* ---------------- GROWN-UPS ---------------- */
+function bindToggle(id,key){
+  const t=$(id);
+  t.classList.toggle('on',DB.settings[key]);
+  t.addEventListener('pointerdown',()=>{
+    DB.settings[key]=!DB.settings[key]; save();
+    t.classList.toggle('on',DB.settings[key]);
+    sfx.tap();
+    if(key==='voice'&&DB.settings.voice) say('Reading out loud is on!');
+    if(key==='mic') $('btnMic').style.display=(DB.settings.mic&&SR)?'grid':'none';
+  });
+}
+$('btnGrown1').addEventListener('pointerdown',()=>show('scr-grown'));
+$('btnGrown2').addEventListener('pointerdown',()=>show('scr-grown'));
+$('btnBack3').addEventListener('pointerdown',()=>{ party.length?openMap():(renderWho(),show('scr-who')); });
+$('btnReset').addEventListener('pointerdown',()=>{
+  if(confirm('Erase all players and progress on this device?')){
+    DB={players:[],settings:DB.settings}; save(); party=[]; renderWho(); show('scr-who');
+  }
+});
+
+/* ---------------- BOOT ---------------- */
+load();
+bindToggle('tgVoice','voice');
+bindToggle('tgMic','mic');
+bindToggle('tgFx','fx');
+if(!SR){ const row=$('tgMic').parentElement; row.style.opacity=.5; }
+</script>
+</body>
+</html>
