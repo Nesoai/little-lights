@@ -77,13 +77,14 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 .big-btn.ghost{background:rgba(255,247,232,.14);border:3px dashed rgba(255,247,232,.5);box-shadow:none;color:var(--moonmilk)}
 
 /* ---------- splash ---------- */
-#scr-splash{justify-content:center;text-align:center;gap:10px}
-#scr-splash h1{font-size:clamp(44px,11vw,84px);line-height:1.02;
+#scr-splash{justify-content:flex-start;text-align:center}
+#splashInner{margin:auto;display:flex;flex-direction:column;align-items:center;gap:min(10px,1.4vh)}
+#scr-splash h1{font-size:clamp(34px,min(11vw,9.5vh),80px);line-height:1.02;
   background:linear-gradient(90deg,#ff8a8a,#ffc84a,#7ee2a8,#7fc2ff,#c9a1ff);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 4px 0 rgba(0,0,0,.25));}
-#scr-splash .sub{font-size:clamp(18px,4.5vw,24px);opacity:.9;max-width:26ch;margin:0 auto}
-.splash-kid{width:min(46vw,220px);margin:6px auto -4px;animation:float 4s ease-in-out infinite}
+#scr-splash .sub{font-size:clamp(16px,min(4.5vw,3vh),24px);opacity:.9;max-width:28ch;margin:0 auto}
+.splash-kid{width:min(46vw,34vh,220px);margin:2px auto -4px;animation:float 4s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 
 /* ---------- profiles ---------- */
@@ -100,7 +101,7 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 .avgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:460px;margin:12px 0}
 .av{font-size:46px;background:var(--moonmilk);border-radius:22px;padding:12px 0;text-align:center;cursor:pointer;border:5px solid transparent;box-shadow:var(--shadow)}
 .av.sel{border-color:var(--sun);transform:scale(1.08)}
-#nameIn{font-family:'Baloo 2';font-weight:700;font-size:26px;text-align:center;border:none;border-radius:20px;padding:14px;width:min(90%,340px);color:var(--ink);outline:4px solid transparent}
+#nameIn{font-family:'Baloo 2';font-weight:700;font-size:26px;text-align:center;border:none;border-radius:20px;padding:14px;width:min(92%,440px);color:var(--ink);outline:4px solid transparent}
 #nameIn:focus{outline-color:var(--sun)}
 
 /* ---------- world map ---------- */
@@ -117,6 +118,8 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 .w-energy{background:linear-gradient(160deg,#7fc2ff,#3a7bd5)}
 .w-space{background:linear-gradient(160deg,#6b5ce7,#3d2f8f)}
 .w-story{background:linear-gradient(160deg,#ff9cc0,#e2568f)}
+.world.wiggle{animation:wig .85s ease;box-shadow:0 0 0 6px rgba(255,217,61,.85), var(--shadow)}
+@keyframes wig{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-4deg) scale(1.08)}50%{transform:rotate(4deg) scale(1.1)}80%{transform:rotate(-2deg) scale(1.05)}}
 
 /* ---------- game shared ---------- */
 .gamewrap{width:100%;max-width:640px;display:flex;flex-direction:column;align-items:center;flex:1}
@@ -163,7 +166,9 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 /* story */
 .storypage{background:var(--moonmilk);color:var(--ink);border-radius:32px;box-shadow:var(--shadow);padding:22px 20px;width:100%;max-width:560px;text-align:center;margin-top:6px}
 .storypage .scene{font-size:min(17vw,86px);line-height:1.15;letter-spacing:6px}
-.storypage .stext{font-family:'Baloo 2';font-weight:700;font-size:clamp(20px,5vw,26px);line-height:1.35;margin-top:12px;min-height:3.6em}
+.storypage .stext{font-family:'Baloo 2';font-weight:700;font-size:clamp(20px,5vw,26px);line-height:1.5;margin-top:12px;min-height:3.6em}
+.stext .w{display:inline-block;border-radius:8px;padding:0 3px;transition:background .12s, transform .12s}
+.stext .w.on{background:#ffd93d;transform:translateY(-3px) scale(1.1)}
 .dots{display:flex;gap:8px;justify-content:center;margin:14px 0 6px}
 .dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,247,232,.3)}
 .dots i.on{background:var(--sun)}
@@ -202,11 +207,13 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 
 <!-- SPLASH -->
 <section class="screen on" id="scr-splash">
-  <h1>Little Lights</h1>
-  <p class="sub">a magic garden of colors, plants &amp; stars 🌟</p>
-  <div class="splash-kid" id="splashKid"></div>
-  <button class="big-btn gold" id="btnStart">▶ &nbsp;Tap to play!</button>
-  <p class="footnote">Made with love by Boundless · sound on 🔊</p>
+  <div id="splashInner">
+    <h1>Little Lights</h1>
+    <p class="sub">a magic garden of colors, plants &amp; stars 🌟</p>
+    <div class="splash-kid" id="splashKid"></div>
+    <button class="big-btn gold" id="btnStart">▶ &nbsp;Tap to play!</button>
+    <p class="footnote" style="margin-top:4px">Made with love by Boundless · sound on 🔊</p>
+  </div>
 </section>
 
 <!-- WHO'S PLAYING -->
@@ -222,7 +229,7 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
 <section class="screen" id="scr-new">
   <h2 style="font-size:clamp(26px,7vw,36px);text-shadow:0 3px 0 rgba(0,0,0,.25)">Pick your animal! 🐾</h2>
   <div class="avgrid" id="avgrid"></div>
-  <input id="nameIn" maxlength="12" placeholder="Your name (grown-up can type)">
+  <input id="nameIn" maxlength="12" placeholder="Type a name (optional)">
   <div style="display:flex;gap:12px;margin-top:16px">
     <button class="big-btn ghost" id="btnNewBack">← Back</button>
     <button class="big-btn gold" id="btnNewSave">All done! ✔</button>
@@ -453,6 +460,42 @@ function say(text,opts={}){
 let lastLine='';
 function narrate(text,opts){ lastLine=text; say(text,opts); }
 
+/* Read text aloud while bouncing each word (with a timing fallback
+   for browsers that don't report word boundaries, e.g. iOS Safari). */
+let karaokeStop=null;
+function narrateKaraoke(tokens,spans){
+  if(karaokeStop) karaokeStop();
+  const text=tokens.join(' ');
+  lastLine=text;
+  const offs=[]; let c=0; tokens.forEach(t=>{offs.push(c); c+=t.length+1;});
+  const hl=i=>spans.forEach((s,j)=>s.classList.toggle('on',j===i));
+  let timers=[]; let done=false;
+  const stop=()=>{ done=true; timers.forEach(clearTimeout); spans.forEach(s=>s.classList.remove('on')); karaokeStop=null; };
+  karaokeStop=stop;
+  const estimate=()=>{ // fallback: pace words by their length
+    let t=250;
+    tokens.forEach((tok,i)=>{ timers.push(setTimeout(()=>{ if(!done) hl(i); },t)); t+=170+tok.length*62; });
+    timers.push(setTimeout(()=>{ if(!done) stop(); },t+300));
+  };
+  if(!DB.settings.voice||!('speechSynthesis' in window)){ estimate(); return; }
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    if(pickedVoice)u.voice=pickedVoice; u.rate=.88; u.pitch=1.15;
+    let gotBoundary=false;
+    u.onboundary=e=>{
+      if(e.name && e.name!=='word') return;
+      if(!gotBoundary){ gotBoundary=true; timers.forEach(clearTimeout); timers=[]; }
+      let i=0; for(let j=0;j<offs.length;j++){ if(e.charIndex>=offs[j]) i=j; else break; }
+      if(!done) hl(i);
+    };
+    u.onstart=()=>{ timers.push(setTimeout(()=>{ if(!gotBoundary&&!done) estimate(); },800)); };
+    u.onend=()=>{ if(!done) stop(); };
+    u.onerror=()=>{ if(!done) stop(); };
+    speechSynthesis.speak(u);
+  }catch(e){ estimate(); }
+}
+
 /* ---------------- SOUND FX ---------------- */
 let AC=null;
 function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
@@ -615,10 +658,28 @@ function openMap(){
   });
   $('btnMic').style.display = (DB.settings.mic && SR)? 'grid':'none';
   show('scr-map');
-  if(!openMap.said){ say('Pick a world! '+WORLDS.map(w=>w.name).join('. ')+'.'); openMap.said=true; }
-  else say('Pick a world!');
+  rollCall();
 }
 $('btnHome').addEventListener('pointerdown',()=>{sfx.tap();renderWho();show('scr-who');});
+function applyV(u,rate){ if(pickedVoice)u.voice=pickedVoice; u.rate=rate||.95; u.pitch=1.15; }
+function wiggleCard(c){ if(!c)return; c.classList.remove('wiggle'); void c.offsetWidth; c.classList.add('wiggle');
+  c.addEventListener('animationend',()=>c.classList.remove('wiggle'),{once:true}); }
+function rollCall(){
+  lastLine='Pick a world!';
+  const cards=[...document.querySelectorAll('#wgrid .world')];
+  if(!DB.settings.voice||!('speechSynthesis' in window)){
+    // no voice: still wiggle each card in turn so pre-readers can follow along
+    cards.forEach((c,i)=>setTimeout(()=>wiggleCard(c), 400+i*950));
+    return;
+  }
+  speechSynthesis.cancel();
+  const u0=new SpeechSynthesisUtterance('Pick a world!'); applyV(u0); speechSynthesis.speak(u0);
+  WORLDS.forEach((w,i)=>{
+    const u=new SpeechSynthesisUtterance(w.name); applyV(u);
+    u.onstart=()=>wiggleCard(cards[i]);
+    speechSynthesis.speak(u);
+  });
+}
 
 /* ---------------- GAME CORE (turns, stars, levels) ---------------- */
 function curPlayer(){ return party[turn%party.length]; }
@@ -671,9 +732,10 @@ function startWorld(id){
   nextQ();
 }
 $('btnBack1').addEventListener('pointerdown',()=>{window.speechSynthesis&&speechSynthesis.cancel();openMap();});
-$('btnBack2').addEventListener('pointerdown',()=>{window.speechSynthesis&&speechSynthesis.cancel();openMap();});
+$('btnBack2').addEventListener('pointerdown',()=>{window.speechSynthesis&&speechSynthesis.cancel();if(karaokeStop)karaokeStop();storyReplay=null;openMap();});
 $('btnSay1').addEventListener('pointerdown',()=>say(lastLine));
-$('btnSay2').addEventListener('pointerdown',()=>say(lastLine));
+let storyReplay=null;
+$('btnSay2').addEventListener('pointerdown',()=>{ storyReplay?storyReplay():say(lastLine); });
 
 function optionCards(opts,onPick,cols){
   const grid=document.createElement('div');grid.className='ogrid';
@@ -934,6 +996,8 @@ function startBreath(){
 /* ---------------- WORLD: STORY TIME ---------------- */
 let storyIdx=0,pageIdx=0;
 function openStoryMenu(){
+  if(karaokeStop) karaokeStop();
+  storyReplay=null;
   show('scr-game');
   setGameChrome('story');
   $('gLvl').textContent='📖 Stories';
@@ -953,13 +1017,22 @@ function renderPage(){
   const w=$('storyWrap');
   w.innerHTML=`
    <h2 style="font-size:clamp(22px,5.5vw,30px);text-shadow:0 3px 0 rgba(0,0,0,.25);text-align:center">${st.emoji} ${st.title}</h2>
-   <div class="storypage"><div class="scene">${pg.s}</div><div class="stext">${pg.t}</div></div>
+   <div class="storypage"><div class="scene">${pg.s}</div><div class="stext" id="stext"></div></div>
    <div class="dots">${st.pages.map((_,i)=>`<i class="${i===pageIdx?'on':''}"></i>`).join('')}</div>
    <div style="display:flex;gap:12px;margin-top:6px">
      ${pageIdx>0?'<button class="big-btn ghost" id="pgPrev">←</button>':''}
      <button class="big-btn berry" id="pgNext">${pageIdx<st.pages.length-1?'Next →':'The end! ⭐'}</button>
    </div>`;
-  narrate(pg.t,{rate:.88});
+  // build one span per word so it can bounce as it is read
+  const tokens=pg.t.split(/\s+/).filter(Boolean);
+  const box=$('stext');
+  tokens.forEach((t,i)=>{
+    const sp=document.createElement('span'); sp.className='w'; sp.textContent=t;
+    box.appendChild(sp);
+    if(i<tokens.length-1) box.appendChild(document.createTextNode(' '));
+  });
+  narrateKaraoke(tokens,[...box.querySelectorAll('.w')]);
+  storyReplay=()=>narrateKaraoke(tokens,[...box.querySelectorAll('.w')]);
   const nx=$('pgNext');
   nx.addEventListener('pointerdown',()=>{
     sfx.tap();
