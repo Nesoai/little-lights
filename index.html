@@ -84,7 +84,8 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 4px 0 rgba(0,0,0,.25));}
 #scr-splash .sub{font-size:clamp(16px,min(4.5vw,3vh),24px);opacity:.9;max-width:28ch;margin:0 auto}
-.splash-kid{width:min(46vw,34vh,220px);margin:2px auto -4px;animation:float 4s ease-in-out infinite}
+.splash-kid{width:min(46vw,32vh,220px);margin:2px auto -4px;animation:float 4s ease-in-out infinite}
+.splash-kid .bodybox{width:100%}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 
 /* ---------- profiles ---------- */
@@ -212,7 +213,7 @@ h1,h2,h3{font-family:'Baloo 2',cursive;margin:0}
     <p class="sub">a magic garden of colors, plants &amp; stars 🌟</p>
     <div class="splash-kid" id="splashKid"></div>
     <button class="big-btn gold" id="btnStart">▶ &nbsp;Tap to play!</button>
-    <p class="footnote" style="margin-top:4px">Made with love by Boundless · sound on 🔊</p>
+    <p class="footnote" style="margin-top:4px">Made with love by Boundless · sound on 🔊 · v1.2</p>
   </div>
 </section>
 
@@ -441,8 +442,11 @@ let voiceReady=false, pickedVoice=null;
 function pickVoice(){
   const vs=speechSynthesis.getVoices();
   if(!vs.length) return;
-  pickedVoice = vs.find(v=>/en/i.test(v.lang)&&/female|zira|samantha|karen|jenny|aria|google us english/i.test(v.name))
-             || vs.find(v=>/^en/i.test(v.lang)) || vs[0];
+  const en=vs.filter(v=>/^en/i.test(v.lang));
+  pickedVoice = en.find(v=>v.localService&&/female|zira|samantha|karen|jenny|aria|susan|hazel/i.test(v.name))
+             || en.find(v=>v.localService)
+             || en.find(v=>/female|zira|samantha|karen|jenny|aria|google us english/i.test(v.name))
+             || en[0] || vs[0];
   voiceReady=true;
 }
 if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
@@ -477,7 +481,9 @@ function narrateKaraoke(tokens,spans){
     tokens.forEach((tok,i)=>{ timers.push(setTimeout(()=>{ if(!done) hl(i); },t)); t+=170+tok.length*62; });
     timers.push(setTimeout(()=>{ if(!done) stop(); },t+300));
   };
-  if(!DB.settings.voice||!('speechSynthesis' in window)){ estimate(); return; }
+  // Words always move: start the length-paced bounce right away.
+  estimate();
+  if(!DB.settings.voice||!('speechSynthesis' in window)) return;
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
@@ -489,11 +495,9 @@ function narrateKaraoke(tokens,spans){
       let i=0; for(let j=0;j<offs.length;j++){ if(e.charIndex>=offs[j]) i=j; else break; }
       if(!done) hl(i);
     };
-    u.onstart=()=>{ timers.push(setTimeout(()=>{ if(!gotBoundary&&!done) estimate(); },800)); };
-    u.onend=()=>{ if(!done) stop(); };
-    u.onerror=()=>{ if(!done) stop(); };
+    u.onend=()=>{ if(!done&&gotBoundary) stop(); };
     speechSynthesis.speak(u);
-  }catch(e){ estimate(); }
+  }catch(e){}
 }
 
 /* ---------------- SOUND FX ---------------- */
