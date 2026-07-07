@@ -267,7 +267,7 @@ if(GA_ID){const s=document.createElement('script');s.async=true;s.src='https://w
     <div class="splash-kid" id="splashKid"></div>
     <div id="tapHand" aria-hidden="true">👇</div>
     <button class="big-btn gold" id="btnStart">▶ &nbsp;Tap to play!</button>
-    <p class="footnote" style="margin-top:4px">Made with love by Boundless · sound on 🔊 · v1.7 · © 2026 Boundless / Mallory Bailey-Finkley — all rights reserved</p>
+    <p class="footnote" style="margin-top:4px">Made with love by Boundless · sound on 🔊 · v1.8 · © 2026 Boundless / Mallory Bailey-Finkley — all rights reserved</p>
   </div>
 </section>
 
@@ -500,13 +500,16 @@ function pickVoice(){
   const vs=speechSynthesis.getVoices();
   if(!vs.length) return;
   const en=vs.filter(v=>/^en/i.test(v.lang));
-  pickedVoice = en.find(v=>v.localService&&/female|zira|samantha|karen|jenny|aria|susan|hazel/i.test(v.name))
+  pickedVoice = en.find(v=>/(enhanced|premium|natural|neural|siri)/i.test(v.name)&&v.localService)
+             || en.find(v=>/(enhanced|premium|natural|neural|siri)/i.test(v.name))
+             || en.find(v=>v.localService&&/female|zira|samantha|karen|jenny|aria|susan|hazel/i.test(v.name))
              || en.find(v=>v.localService)
              || en.find(v=>/female|zira|samantha|karen|jenny|aria|google us english/i.test(v.name))
              || en[0] || vs[0];
   voiceReady=true;
 }
-if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;
+  setInterval(()=>{ try{ if(speechSynthesis.speaking) speechSynthesis.resume(); }catch(e){} },4000); }
 function say(text,opts={}){
   if(!DB.settings.voice || !('speechSynthesis' in window)) return;
   try{
@@ -515,7 +518,7 @@ function say(text,opts={}){
     if(pickedVoice) u.voice=pickedVoice;
     u.rate=opts.rate||0.92; u.pitch=opts.pitch||1.15;
     if(opts.onend) u.onend=opts.onend;
-    speechSynthesis.speak(u);
+    setTimeout(()=>{ speechSynthesis.speak(u); try{speechSynthesis.resume()}catch(e){} },40);
   }catch(e){}
 }
 let lastLine='';
@@ -554,6 +557,14 @@ function narrateKaraoke(tokens,spans){
   if(!DB.settings.voice||!('speechSynthesis' in window)) return;
   try{
     speechSynthesis.cancel();
+    if(text.length>180){ /* long story pages: some devices silently drop long utterances — speak in sentence chunks */
+      const chunks=text.match(/[^.!?]+[.!?]*/g)||[text];
+      let ci=0; const next=()=>{ if(done||ci>=chunks.length)return;
+        const cu=new SpeechSynthesisUtterance(chunks[ci++].trim());
+        if(pickedVoice)cu.voice=pickedVoice; cu.rate=.88; cu.pitch=1.15; cu.onend=()=>setTimeout(next,120);
+        speechSynthesis.speak(cu); try{speechSynthesis.resume()}catch(e){} };
+      setTimeout(next,80); return;
+    }
     const u=new SpeechSynthesisUtterance(text);
     if(pickedVoice)u.voice=pickedVoice; u.rate=.88; u.pitch=1.15;
     let gotBoundary=false;
@@ -1170,6 +1181,12 @@ bindToggle('tgVoice','voice');
 bindToggle('tgMic','mic');
 bindToggle('tgFx','fx');
 if(!SR){ const row=$('tgMic').parentElement; row.style.opacity=.5; }
+
+/* the floating splash friend is tappable too */
+(function(){ const sk=document.getElementById('splashKid')||document.querySelector('.splash-kid');
+ if(!sk)return; sk.style.cursor='pointer';
+ sk.addEventListener('pointerdown',()=>{ const b=document.querySelector('#scr-splash .big-btn')||document.querySelector('#scr-splash button'); if(b) b.click(); });
+})();
 </script>
 </body>
 </html>
